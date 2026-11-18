@@ -1,0 +1,691 @@
+<!DOCTYPE html>
+<html lang="am">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>IFTU MARKET</title>
+    <style>
+        :root {
+            --blue-primary: #0A192F; /* Deep Royal Blue */
+            --blue-secondary: #1E3A8A; /* Rich Blue */
+            --blue-accent: #3B82F6;  /* Bright Blue Accent */
+            --blue-hover: #1D4ED8;
+            --bg-color: #F0F4F8;     /* Light Blue-Gray Background */
+            --card-bg: #FFFFFF;
+            --text-main: #0F172A;
+            --text-muted: #475569;
+            --white: #FFFFFF;
+        }
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
+        body { background-color: var(--bg-color); color: var(--text-main); line-height: 1.5; }
+        
+        header { background-color: var(--blue-primary); color: var(--white); padding: 0.8rem 1.5rem; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 3px 10px rgba(10,25,47,0.3); flex-wrap: wrap; gap: 12px; border-bottom: 4px solid var(--blue-accent); }
+        .logo-area h1 { font-size: 1.7rem; letter-spacing: 0.5px; color: var(--white); font-weight: 800; cursor: pointer; }
+        .logo-area h1 span { color: var(--blue-accent); background: var(--white); padding: 2px 8px; border-radius: 4px; margin-left: 2px; }
+        
+        .nav-controls { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+        nav { display: flex; gap: 8px; flex-wrap: wrap; }
+        nav a { color: var(--white); text-decoration: none; font-size: 0.9rem; font-weight: 600; cursor: pointer; padding: 6px 12px; border-radius: 4px; border: 1px solid rgba(255,255,255,0.2); background: rgba(59,130,246,0.15); display: inline-block; transition: 0.2s; }
+        nav a:hover { border-color: var(--blue-accent); background: var(--blue-accent); color: var(--white); }
+
+        select.custom-select { background: var(--white); color: var(--blue-primary); padding: 6px 10px; border-radius: 4px; border: 1px solid var(--blue-accent); font-weight: bold; cursor: pointer; font-size: 0.85rem; }
+
+        .hero { background: linear-gradient(135deg, var(--blue-primary), var(--blue-secondary)); color: var(--white); text-align: center; padding: 3.5rem 1rem; border-bottom: 5px solid var(--blue-accent); box-shadow: inset 0 -10px 20px rgba(0,0,0,0.2); }
+        .hero h2 { font-size: 2.2rem; color: #60A5FA; margin-bottom: 0.8rem; font-weight: 800; text-shadow: 0 2px 4px rgba(0,0,0,0.3); }
+        .hero p { font-size: 1.1rem; margin-bottom: 1.8rem; color: #E2E8F0; }
+
+        .search-container { max-width: 850px; margin: 0 auto; display: flex; flex-wrap: wrap; background: var(--white); border-radius: 8px; overflow: hidden; border: 3px solid var(--blue-accent); box-shadow: 0 4px 15px rgba(0,0,0,0.15); }
+        .search-container input { flex: 1; min-width: 180px; padding: 14px; border: none; outline: none; font-size: 1rem; color: var(--text-main); }
+        .search-container select { padding: 14px; border: none; background: #F8FAFC; border-left: 1px solid #CBD5E1; color: var(--text-main); font-weight: 600; outline: none; }
+        .search-btn { background-color: var(--blue-accent); color: var(--white); border: none; padding: 0 25px; cursor: pointer; font-weight: 800; font-size: 1.1rem; transition: background 0.2s; }
+        .search-btn:hover { background-color: var(--blue-hover); }
+
+        .categories-bar { display: flex; justify-content: flex-start; gap: 10px; padding: 1rem; background: var(--white); box-shadow: 0 2px 6px rgba(0,0,0,0.05); overflow-x: auto; }
+        @media(min-width: 768px) { .categories-bar { justify-content: center; } }
+        .cat-chip { background: #EFF6FF; border: 1px solid #BFDBFE; padding: 8px 18px; border-radius: 20px; cursor: pointer; font-size: 0.9rem; font-weight: 700; color: var(--blue-secondary); white-space: nowrap; transition: 0.2s; }
+        .cat-chip:hover, .cat-chip.active { background: var(--blue-primary); color: var(--white); border-color: var(--blue-primary); }
+
+        .container { max-width: 1250px; margin: 2rem auto; padding: 0 1rem; }
+        .section-title { font-size: 1.6rem; color: var(--blue-primary); margin-bottom: 1.5rem; font-weight: 800; border-bottom: 3px solid var(--blue-accent); display: inline-block; padding-bottom: 4px; }
+
+        .products-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 20px; }
+        .product-card { background: var(--card-bg); border-radius: 8px; overflow: hidden; box-shadow: 0 3px 10px rgba(0,0,0,0.08); border: 1px solid #CBD5E1; position: relative; transition: transform 0.2s; }
+        .product-card:hover { transform: translateY(-4px); box-shadow: 0 6px 15px rgba(59,130,246,0.15); }
+        .product-card.featured { border: 2px solid var(--blue-accent); }
+        .featured-badge { position: absolute; top: 10px; left: 10px; background: var(--blue-accent); color: var(--white); padding: 4px 10px; font-size: 0.75rem; font-weight: 800; border-radius: 4px; z-index: 2; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
+        .category-tag { position: absolute; top: 10px; right: 10px; background: var(--blue-primary); color: #60A5FA; padding: 4px 8px; font-size: 0.75rem; border-radius: 4px; z-index: 2; font-weight: 700; }
+        
+        .product-img { width: 100%; height: 210px; object-fit: cover; background: #E2E8F0; display: block; }
+        .product-info { padding: 1.2rem; }
+        .product-title { font-size: 1.1rem; font-weight: 700; color: var(--text-main); margin-bottom: 6px; }
+        .product-price { color: #1D4ED8; font-size: 1.2rem; font-weight: 800; margin-bottom: 8px; } 
+        .product-desc { font-size: 0.88rem; color: var(--text-muted); margin-bottom: 14px; }
+        
+        .telegram-btn { display: block; text-align: center; background-color: #0088cc; color: white; padding: 10px; border-radius: 6px; text-decoration: none; font-weight: 700; font-size: 0.95rem; transition: background 0.2s; }
+        .telegram-btn:hover { background-color: #006699; }
+
+        .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(10,25,47,0.8); justify-content: center; align-items: center; z-index: 9999; padding: 15px; }
+        .modal-content { background: var(--white); padding: 2rem; border-radius: 8px; width: 100%; max-width: 450px; position: relative; max-height: 90vh; overflow-y: auto; border-top: 6px solid var(--blue-accent); box-shadow: 0 10px 25px rgba(0,0,0,0.2); }
+        .close-btn { position: absolute; top: 12px; right: 15px; font-size: 1.8rem; cursor: pointer; color: var(--text-muted); font-weight: bold; }
+        
+        .form-group { margin-bottom: 1.1rem; }
+        .form-group label { display: block; margin-bottom: 6px; font-weight: 700; color: var(--text-main); font-size: 0.9rem; }
+        .form-group input, .form-group select, .form-group textarea { width: 100%; padding: 11px; border: 1px solid #CBD5E1; border-radius: 4px; font-size: 0.95rem; outline: none; }
+        .form-group input:focus, .form-group select:focus, .form-group textarea:focus { border-color: var(--blue-accent); box-shadow: 0 0 4px rgba(59,130,246,0.4); }
+
+        .auth-switch { text-align: center; margin-top: 15px; font-size: 0.9rem; }
+        .auth-switch span { color: var(--blue-accent); cursor: pointer; font-weight: 700; text-decoration: underline; }
+
+        footer { background-color: var(--blue-primary); color: var(--white); text-align: center; padding: 2.5rem; margin-top: 3rem; border-top: 4px solid var(--blue-accent); }
+    </style>
+</head>
+<body>
+
+    <header>
+        <div class="logo-area">
+            <h1 id="ui-brand" onclick="resetHome()">IFTU <span>MARKET</span></h1>
+        </div>
+        <div class="nav-controls">
+            <select id="currencySelect" class="custom-select" onchange="changeCurrency()">
+                <option value="ETB" selected>ETB (ብር)</option>
+                <option value="USD">USD ($)</option>
+                <option value="AED">AED (درهم)</option>
+            </select>
+
+            <select id="langSelect" class="custom-select" onchange="changeLanguage()">
+                <option value="am" selected>አማርኛ (Amharic)</option>
+                <option value="om">Afaan Oromoo</option>
+                <option value="en">English</option>
+                <option value="ar">العربية (Arabic)</option>
+                <option value="so">Soomaaliga (Somali)</option>
+                <option value="ti">ትግርኛ (Tigrinya)</option>
+                <option value="sd">Sidaamigna (Sidamu)</option>
+                <option value="wo">Wolayttatto (Wolaytta)</option>
+                <option value="af">Qafaraf (Afar)</option>
+            </select>
+
+            <nav>
+                <a id="nav-auth" onclick="openModal('authModal')">ግባ / Sign In</a>
+                <a id="nav-post" onclick="checkAuthAndPost()">ዕቃ ለጠፍ</a>
+                <a id="nav-admin" onclick="openModal('adminModal')">አስተዳዳሪ</a>
+            </nav>
+        </div>
+    </header>
+
+    <div class="hero">
+        <h2 id="hero-title">ዓለም አቀፍ የገበያ ማዕከል</h2>
+        <p id="hero-subtitle">ዕቃዎች፣ ቤቶች፣ መኪኖች ወይም ማሽነሪዎች ይፈልጋሉ? በፈጣን ይግዙ እና ይሽጡ!</p>
+        
+        <div class="search-container">
+            <input type="text" id="searchInput" placeholder="ምን ይፈልጋሉ? (Search...)" onkeyup="filterListings()">
+            <select id="searchCategory" onchange="syncCategoryDropdown()">
+                <option value="all" id="opt-all">ሁሉም ምድቦች</option>
+                <option value="goods" id="opt-goods">ዕቃዎች</option>
+                <option value="realestate" id="opt-re">ቤቶች/ሪል ስቴት</option>
+                <option value="cars" id="opt-cars">ተሽከርካሪዎች</option>
+                <option value="machinery" id="opt-mach">ማሽነሪዎች</option>
+            </select>
+            <button type="button" class="search-btn" onclick="filterListings()">🔍</button>
+        </div>
+    </div>
+
+    <div class="categories-bar">
+        <div class="cat-chip active" data-cat="all" onclick="setCategory('all', this)" id="cat-all-bar">ሁሉም</div>
+        <div class="cat-chip" data-cat="goods" onclick="setCategory('goods', this)" id="cat-goods-bar">ዕቃዎች & ዘይት</div>
+        <div class="cat-chip" data-cat="realestate" onclick="setCategory('realestate', this)" id="cat-re-bar">ቤቶች</div>
+        <div class="cat-chip" data-cat="cars" onclick="setCategory('cars', this)" id="cat-cars-bar">መኪኖች</div>
+        <div class="cat-chip" data-cat="machinery" onclick="setCategory('machinery', this)" id="cat-mach-bar">ማሽነሪዎች</div>
+    </div>
+
+    <div class="container">
+        <h3 class="section-title" id="sec-title">የቅርብ ጊዜ ማስታወቂያዎች</h3>
+        <div class="products-grid" id="productsGrid"></div>
+    </div>
+
+    <!-- AUTH MODAL -->
+    <div id="authModal" class="modal">
+        <div class="modal-content">
+            <span class="close-btn" onclick="closeModal('authModal')">&times;</span>
+            
+            <div id="loginView">
+                <h3 class="section-title" style="margin-bottom:1rem;" id="m-login-title">ግባ (Sign In)</h3>
+                <div class="form-group"><label id="lbl-log-email">ኢሜይል (Email)</label><input type="email" id="logEmail"></div>
+                <div class="form-group"><label id="lbl-log-pass">የሚስጥር ቃል (Password)</label><input type="password" id="logPass"></div>
+                <button type="button" class="search-btn" onclick="handleLogin()" style="width:100%; padding:12px; border-radius:4px;" id="btn-login">ግባ</button>
+                <div class="auth-switch">
+                    <p id="txt-no-acc">አካውንት የለዎትም? <span onclick="switchAuthView('signup')">እዚህ ይመዝገቡ (Sign Up)</span></p>
+                </div>
+            </div>
+
+            <div id="signupView" style="display:none;">
+                <h3 class="section-title" style="margin-bottom:1rem;" id="m-signup-title">አዲስ አካውንት መፍጠር</h3>
+                <div class="form-group"><label id="lbl-reg-name">ሙሉ ስም</label><input type="text" id="regName"></div>
+                <div class="form-group"><label id="lbl-reg-email">ኢሜይል</label><input type="email" id="regEmail"></div>
+                <div class="form-group"><label id="lbl-reg-pass">የሚስጥር ቃል</label><input type="password" id="regPass"></div>
+                <div class="form-group"><label id="lbl-reg-phone">ስልክ ቁጥር</label><input type="text" id="regPhone"></div>
+                <div class="form-group"><label id="lbl-reg-tg">ቴሌግራም (@username)</label><input type="text" id="regTelegram"></div>
+                <button type="button" class="search-btn" onclick="handleSignup()" style="width:100%; padding:12px; border-radius:4px;" id="btn-signup">ይመዝገቡ & ኮድ ላክ</button>
+                <div class="auth-switch">
+                    <p id="txt-has-acc">አካውንት አለዎት? <span onclick="switchAuthView('login')">ግባ (Sign In)</span></p>
+                </div>
+            </div>
+
+            <div id="verifyView" style="display:none;">
+                <h3 class="section-title" style="margin-bottom:1rem;" id="m-verify-title">ኢሜይል ማረጋገጫ</h3>
+                <p style="font-size: 0.9rem; margin-bottom: 15px; color: var(--text-muted);">የማረጋገጫ ኮድ (Demo Code: <b>1234</b>) ወደኢሜይልዎ ተልኳል። እባክዎ ያስገቡ:</p>
+                <div class="form-group"><label id="lbl-v-code">የማረጋገጫ ኮድ (4-Digit)</label><input type="text" id="verifyCode" placeholder="1234"></div>
+                <button type="button" class="search-btn" onclick="handleVerification()" style="width:100%; padding:12px; border-radius:4px;" id="btn-verify">አረጋግጥ (Verify)</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- POST PRODUCT MODAL -->
+    <div id="postModal" class="modal">
+        <div class="modal-content">
+            <span class="close-btn" onclick="closeModal('postModal')">&times;</span>
+            <h3 class="section-title" id="m-post-title" style="margin-bottom:1rem;">አዲስ ማስታወቂያ አስገባ</h3>
+            <div class="form-group">
+                <label id="lbl-pcat">የምድብ ዓይነት</label>
+                <select id="pCategory">
+                    <option value="goods">ዕቃዎች / General Goods</option>
+                    <option value="realestate">ቤቶች / Real Estate</option>
+                    <option value="cars">ተሽከርካሪዎች / Vehicles</option>
+                    <option value="machinery">ማሽነሪዎች / Machinery</option>
+                </select>
+            </div>
+            <div class="form-group"><label id="lbl-ptitle">የዕቃው/ምርቱ ስም</label><input type="text" id="pTitle"></div>
+            <div class="form-group"><label id="lbl-pprice">ዋጋ (በመረጡት ምንዛሬ)</label><input type="number" id="pPrice" placeholder="4500"></div>
+            <div class="form-group">
+                <label id="lbl-pimg">ሱራ / ምስል ምረጥ (Upload Image)</label>
+                <input type="file" id="pImgFile" accept="image/*">
+            </div>
+            <div class="form-group"><label id="lbl-pdesc">ሙሉ መግለጫ</label><textarea id="pDesc" rows="3"></textarea></div>
+            <button type="button" class="search-btn" onclick="submitProduct()" style="width:100%; padding:12px; border-radius:4px;" id="btn-post-sub">አስገባ</button>
+        </div>
+    </div>
+
+    <!-- ADMIN MODAL -->
+    <div id="adminModal" class="modal">
+        <div class="modal-content">
+            <span class="close-btn" onclick="closeModal('adminModal')">&times;</span>
+            <h3 class="section-title" style="margin-bottom:1rem;">Admin Dashboard</h3>
+            <div id="adminLoginBox">
+                <div class="form-group"><label>Password</label><input type="password" id="adminPass" placeholder="Fike@iftu&2026"></div>
+                <button type="button" class="search-btn" onclick="checkAdmin()" style="width:100%; padding:12px; border-radius:4px;">ግባ</button>
+            </div>
+            <div id="adminPanelBox" style="display:none;">
+                <h4 style="color:var(--blue-primary); margin-bottom:10px;">ማረጋገጫ የሚጠብቁ (Pending)</h4>
+                <div id="pendingList" style="max-height: 350px; overflow-y: auto;"></div>
+            </div>
+        </div>
+    </div>
+
+    <footer>
+        <p id="footer-text">&copy; 2026 IFTU MARKET. መብቱ በህግ የተጠበቀ ነው።</p>
+    </footer>
+
+    <script>
+        const defaultImg = "data:image/svg+xml;charset=UTF-8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='400' height='250' viewBox='0 0 400 250'%3E%3Crect fill='%230A192F' width='400' height='250'/%3E%3Ctext fill='%2360A5FA' font-family='sans-serif' font-size='22' font-weight='bold' x='50%25' y='50%25' text-anchor='middle' dominant-baseline='middle'%3EIFTU MARKET%3C/text%3E%3C/svg%3E";
+
+        const langData = {
+            am: {
+                navAuth: "ግባ / Sign In", navPost: "ዕቃ ለጠፍ", navAdmin: "አስተዳዳሪ",
+                heroTitle: "ዓለም አቀፍ የገበያ ማዕከል",
+                heroSubtitle: "ዕቃዎች፣ ቤቶች፣ መኪኖች ወይም ማሽነሪዎች ይፈልጋሉ? በፈጣን ይግዙ እና ይሽጡ!",
+                secTitle: "የቅርብ ጊዜ ማስታወቂያዎች",
+                all: "ሁሉም", goods: "ዕቃዎች", re: "ቤቶች/ሪል ስቴት", cars: "ተሽከርካሪዎች", mach: "ማሽነሪዎች",
+                tgBtn: "💬 በቴሌግራም ያነጋገሩ",
+                loginTitle: "ግባ (Sign In)", signupTitle: "አዲስ አካውንት መፍጠር", verifyTitle: "ኢሜይል ማረጋገጫ",
+                logEmailLbl: "ኢሜይል", logPassLbl: "የሚስጥር ቃል", btnLogin: "ግባ",
+                regNameLbl: "ሙሉ ስም", regEmailLbl: "ኢሜይል", regPassLbl: "የሚስጥር ቃል", regPhoneLbl: "ስልክ ቁጥር", regTgLbl: "ቴሌግራም (@username)", btnSignup: "ይመዝገቡ & ኮድ ላክ",
+                noAccTxt: "አካውንት የለዎትም? <span onclick=\"switchAuthView('signup')\">እዚህ ይመዝገቡ</span>",
+                hasAccTxt: "አካውንት አለዎት? <span onclick=\"switchAuthView('login')\">ግባ</span>",
+                verifyCodeLbl: "የማረጋገጫ ኮድ (4-Digit)", btnVerify: "አረጋግጥ (Verify)",
+                postTitle: "አዲስ ማስታወቂያ አስገባ", pCat: "የምድብ ዓይነት", pName: "የዕቃው/ምርቱ ስም", pPrice: "ዋጋ", pImg: "ምስል ምረጥ (Upload)", pDesc: "ሙሉ መግለጫ", postBtn: "አስገባ",
+                footer: "© 2026 IFTU MARKET. መብቱ በህግ የተጠበቀ ነው።"
+            },
+            om: {
+                navAuth: "Galmaa'i / Seeni", navPost: "Beeksisa Fe'i", navAdmin: "Admin",
+                heroTitle: "Gabaa Addunyaa Ammayyaa",
+                heroSubtitle: "Meeshaalee, Mana Jireenyaa, Konkolaataa fi Maashinarii barbaaddaa? Saffaatti barbaadi!",
+                secTitle: "Beeksisaalee Ammaa",
+                all: "Hunda", goods: "Meecelata", re: "Manneen Jireenyaa", cars: "Konkolaattoota", mach: "Maashinariiwwan",
+                tgBtn: "💬 Telegram-dhaan Dubbisaa",
+                loginTitle: "Seeni (Sign In)", signupTitle: "Galmee Haaraa (Sign Up)", verifyTitle: "Mirkaneessa Email",
+                logEmailLbl: "Email", logPassLbl: "Password", btnLogin: "Seeni",
+                regNameLbl: "Maqaa Guutuu", regEmailLbl: "Email", regPassLbl: "Password", regPhoneLbl: "Lakk. Bilbilaa", regTgLbl: "Telegram (@username)", btnSignup: "Galmaa'i & Code Ergi",
+                noAccTxt: "Account hin qabduu? <span onclick=\"switchAuthView('signup')\">Asitti galmaa'i</span>",
+                hasAccTxt: "Account qabdaa? <span onclick=\"switchAuthView('login')\">Seeni</span>",
+                verifyCodeLbl: "Code Mirkaneessaa (4-Digit)", btnVerify: "Mirkaneessi (Verify)",
+                postTitle: "Beeksisa Haaraa Galchi", pCat: "Gosa Oomishaa", pName: "Maqaa Meeshichaa", pPrice: "Gatii", pImg: "Suuraa Filadhu (Upload)", pDesc: "Ibsa Guutuu", postBtn: "Ergi",
+                footer: "© 2026 IFTU MARKET. Tajaajila Guutuu."
+            },
+            en: {
+                navAuth: "Sign In", navPost: "Post Ad", navAdmin: "Admin",
+                heroTitle: "Global Online Marketplace",
+                heroSubtitle: "Looking for Goods, Real Estate, Cars, or Machinery? Find & Buy Easily!",
+                secTitle: "Latest Listings",
+                all: "All", goods: "Goods", re: "Real Estate", cars: "Vehicles", mach: "Machinery",
+                tgBtn: "💬 Contact via Telegram",
+                loginTitle: "Sign In", signupTitle: "Create Account", verifyTitle: "Email Verification",
+                logEmailLbl: "Email Address", logPassLbl: "Password", btnLogin: "Sign In",
+                regNameLbl: "Full Name", regEmailLbl: "Email Address", regPassLbl: "Password", regPhoneLbl: "Phone Number", regTgLbl: "Telegram (@username)", btnSignup: "Sign Up & Send Code",
+                noAccTxt: "Don't have an account? <span onclick=\"switchAuthView('signup')\">Sign Up</span>",
+                hasAccTxt: "Already have an account? <span onclick=\"switchAuthView('login')\">Sign In</span>",
+                verifyCodeLbl: "Verification Code (4-Digit)", btnVerify: "Verify",
+                postTitle: "Post New Listing", pCat: "Category", pName: "Item Title", pPrice: "Price", pImg: "Select Image (Upload)", pDesc: "Description", postBtn: "Submit Ad",
+                footer: "© 2026 IFTU MARKET. All Rights Reserved."
+            },
+            ar: {
+                navAuth: "تسجيل الدخول", navPost: "نشر إعلان", navAdmin: "الإدارة",
+                heroTitle: "السوق التجاري العالمي",
+                heroSubtitle: "تبحث عن سلع، عقارات، سيارات، أو آليات؟ اشتري وبِع بسهولة!",
+                secTitle: "أحدث الإعلانات",
+                all: "الكل", goods: "سلع ومنتجات", re: "عقارات", cars: "سيارات", mach: "آليات ومعدات",
+                tgBtn: "💬 تواصل عبر تيليجرام",
+                loginTitle: "تسجيل الدخول", signupTitle: "إنشاء حساب جديد", verifyTitle: "التحقق من البريد",
+                logEmailLbl: "البريد الإلكتروني", logPassLbl: "كلمة المرور", btnLogin: "دخول",
+                regNameLbl: "الاسم الكامل", regEmailLbl: "البريد الإلكتروني", regPassLbl: "كلمة المرور", regPhoneLbl: "رقم الهاتف", regTgLbl: "معرف تيليجرام", btnSignup: "تسجيل وإرسال الرمز",
+                noAccTxt: "ليس لديك حساب؟ <span onclick=\"switchAuthView('signup')\">سجل الآن</span>",
+                hasAccTxt: "لديك حساب بالفعل؟ <span onclick=\"switchAuthView('login')\">تسجيل الدخول</span>",
+                verifyCodeLbl: "رمز التحقق (4 أرقام)", btnVerify: "تحقق",
+                postTitle: "إضافة إعلان جديد", pCat: "التصنيف", pName: "اسم العنصر", pPrice: "السعر", pImg: "اختر صورة", pDesc: "الوصف", postBtn: "نشر الإعلان",
+                footer: "© 2026 IFTU MARKET. جميع الحقوق محفوظة."
+            },
+            so: {
+                navAuth: "Soo Gal", navPost: "Soo Geli", navAdmin: "Maamulka",
+                heroTitle: "Suuqa Caalamiga ah",
+                heroSubtitle: "Ma raadinaysaa Badeecado, Guryo, Gaadiid, mise Mashiinno?",
+                secTitle: "Xayeysiisyadii U Dambeeyay",
+                all: "Dhammaan", goods: "Badeecadaha", re: "Guryaha", cars: "Gaadiidka", mach: "Mashiinnada",
+                tgBtn: "💬 Kala Xiriir Telegram",
+                loginTitle: "Soo Gal", signupTitle: "Samee Account", verifyTitle: "Xaqiijinta Email-ka",
+                logEmailLbl: "Email", logPassLbl: "Password", btnLogin: "Soo Gal",
+                regNameLbl: "Magaca", regEmailLbl: "Email", regPassLbl: "Password", regPhoneLbl: "Tel", regTgLbl: "Telegram", btnSignup: "Isdiiwaangeli",
+                noAccTxt: "Account ma leh? <span onclick=\"switchAuthView('signup')\">Isdiiwaangeli</span>",
+                hasAccTxt: "Account waad leedahay? <span onclick=\"switchAuthView('login')\">Soo Gal</span>",
+                verifyCodeLbl: "Verification Code", btnVerify: "Xaqiiji",
+                postTitle: "Soo Geli Xayeysiis", pCat: "Qeybta", pName: "Magaca", pPrice: "Qiimaha", pImg: "Dooro Sawir", pDesc: "Faahfaahin", postBtn: "Gudbi",
+                footer: "© 2026 IFTU MARKET."
+            },
+            ti: {
+                navAuth: "እተው", navPost: "ምርት ለጥፍ", navAdmin: "አስተዳዳሪ",
+                heroTitle: "ዓለም አቀፍ ዕዳጋ",
+                heroSubtitle: "ንብረት፣ ኣባይቲ፣ መካይን ወይ ማሽነሪ ትደልዩ?",
+                secTitle: "ናይ ሕጂ ማስታወቂያታት",
+                all: "ኩሉ", goods: "ንብረታት", re: "ኣባይቲ", cars: "መካይን", mach: "ማሽነሪታት",
+                tgBtn: "💬 ብቴሌግራም ተዛረቡ",
+                loginTitle: "እተው (Sign In)", signupTitle: "ምዝገባ", verifyTitle: "ናይ ኢሜይል ምርጋገጺ",
+                logEmailLbl: "ኢሜይል", logPassLbl: "ፓስዎርድ", btnLogin: "እተው",
+                regNameLbl: "ምሉእ ስም", regEmailLbl: "ኢሜይል", regPassLbl: "ፓስዎርድ", regPhoneLbl: "ስልኪ", regTgLbl: "ቴሌግራም", btnSignup: "መዝገብ",
+                noAccTxt: "አካውንት የለኩምን? <span onclick=\"switchAuthView('signup')\">ተመዝገቡ</span>",
+                hasAccTxt: "አካውንት አለኩም? <span onclick=\"switchAuthView('login')\">እተው</span>",
+                verifyCodeLbl: "ምርጋገጺ ኮድ", btnVerify: "ኣረጋግጥ",
+                postTitle: "ሓድሽ ማስታወቂያ ኣእቱ", pCat: "ምድብ", pName: "ሽም", pPrice: "ዋጋ", pImg: "ስእሊ ምረጽ", pDesc: "መግለጺ", postBtn: "ኣረክብ",
+                footer: "© 2026 IFTU MARKET."
+            },
+            sd: {
+                navAuth: "Seeni", navPost: "Beeksisa", navAdmin: "Admin",
+                heroTitle: "Adduunye Marikeeti",
+                heroSubtitle: "Meeshuwwa, Inshuuraansi, Konkolaata dhiaddanno?",
+                secTitle: "Haro Beeksisa",
+                all: "Kudha", goods: "Meeshuwwa", re: "Galchshuwwa", cars: "Konkolaatta", mach: "Maashineeri",
+                tgBtn: "💬 Telegram",
+                loginTitle: "Seeni", signupTitle: "Galmee", verifyTitle: "Mirkaneessa",
+                logEmailLbl: "Email", logPassLbl: "Password", btnLogin: "Seeni",
+                regNameLbl: "Maqaa", regEmailLbl: "Email", regPassLbl: "Password", regPhoneLbl: "Bilbila", regTgLbl: "Telegram", btnSignup: "Galmi",
+                noAccTxt: "Account hin qabduu? <span onclick=\"switchAuthView('signup')\">Galmi</span>",
+                hasAccTxt: "Account qabdaa? <span onclick=\"switchAuthView('login')\">Seeni</span>",
+                verifyCodeLbl: "Code", btnVerify: "Mirkaneessi",
+                postTitle: "Beeksisa", pCat: "Gosa", pName: "Maqaa", pPrice: "Gatii", pImg: "Suura", pDesc: "Ibsa", postBtn: "Ergi",
+                footer: "© 2026 IFTU MARKET."
+            },
+            wo: {
+                navAuth: "Seeni", navPost: "Beeksisa", navAdmin: "Admin",
+                heroTitle: "Global Marketplace",
+                heroSubtitle: "Oomisha gurguruu fi bituu dandeessu!",
+                secTitle: "Beeksisa Haaraa",
+                all: "Hunda", goods: "Oomisha", re: "Manneen", cars: "Konkolaataa", mach: "Maashinarii",
+                tgBtn: "💬 Telegram",
+                loginTitle: "Seeni", signupTitle: "Galmee", verifyTitle: "Mirkaneessa",
+                logEmailLbl: "Email", logPassLbl: "Password", btnLogin: "Seeni",
+                regNameLbl: "Maqaa", regEmailLbl: "Email", regPassLbl: "Password", regPhoneLbl: "Bilbila", regTgLbl: "Telegram", btnSignup: "Galmaa'i",
+                noAccTxt: "Account hin qabduu? <span onclick=\"switchAuthView('signup')\">Galmaa'i</span>",
+                hasAccTxt: "Account qabdaa? <span onclick=\"switchAuthView('login')\">Seeni</span>",
+                verifyCodeLbl: "Code", btnVerify: "Mirkaneessi",
+                postTitle: "Beeksisa", pCat: "Gosa", pName: "Maqaa", pPrice: "Gatii", pImg: "Suura", pDesc: "Ibsa", postBtn: "Ergi",
+                footer: "© 2026 IFTU MARKET."
+            },
+            af: {
+                navAuth: "Seeni", navPost: "Beeksisa", navAdmin: "Admin",
+                heroTitle: "Global Marketplace",
+                heroSubtitle: "Qafaraf market place.",
+                secTitle: "Beeksisa",
+                all: "Hunda", goods: "Meecelata", re: "Mana", cars: "Konkolaata", mach: "Maashinarii",
+                tgBtn: "💬 Telegram",
+                loginTitle: "Seeni", signupTitle: "Galmee", verifyTitle: "Mirkaneessa",
+                logEmailLbl: "Email", logPassLbl: "Password", btnLogin: "Seeni",
+                regNameLbl: "Maqaa", regEmailLbl: "Email", regPassLbl: "Password", regPhoneLbl: "Bilbila", regTgLbl: "Telegram", btnSignup: "Galmaa'i",
+                noAccTxt: "Account hin qabduu? <span onclick=\"switchAuthView('signup')\">Galmaa'i</span>",
+                hasAccTxt: "Account qabdaa? <span onclick=\"switchAuthView('login')\">Seeni</span>",
+                verifyCodeLbl: "Code", btnVerify: "Mirkaneessi",
+                postTitle: "Beeksisa", pCat: "Gosa", pName: "Maqaa", pPrice: "Gatii", pImg: "Image", pDesc: "Ibsa", postBtn: "Ergi",
+                footer: "© 2026 IFTU MARKET."
+            }
+        };
+
+        let currentLang = 'am';
+        let currentCurrency = 'ETB';
+        let currentUser = JSON.parse(localStorage.getItem('iftu_current_user')) || null;
+        let tempSignupData = null;
+        let activeCategoryFilter = 'all';
+
+        const currencySymbols = {
+            ETB: ' ETB (ብር)',
+            USD: ' $ (USD)',
+            AED: ' AED (درهم)'
+        };
+
+        let products = JSON.parse(localStorage.getItem('iftu_global_products')) || [
+            { id: 1, category: 'goods', title: 'IFTU Organic Hair Oil (260ml)', price: 450, currency: 'ETB', img: defaultImg, desc: '100% Natural Organic Hair Oil.', telegram: 'iftuhairoil', featured: true },
+            { id: 2, category: 'realestate', title: 'Bole Villa House (Addis Ababa)', price: 15000000, currency: 'ETB', img: defaultImg, desc: 'Modern residential house for sale.', telegram: 'iftuhairoil', featured: true },
+            { id: 3, category: 'cars', title: 'Toyota Corolla 2022', price: 2800000, currency: 'ETB', img: defaultImg, desc: 'Clean condition, low mileage.', telegram: 'iftuhairoil', featured: false },
+            { id: 4, category: 'machinery', title: 'Industrial Coffee Roaster', price: 85000, currency: 'AED', img: defaultImg, desc: 'Heavy duty coffee processing machine.', telegram: 'iftuhairoil', featured: false }
+        ];
+
+        let pendingProducts = JSON.parse(localStorage.getItem('iftu_global_pending')) || [];
+
+        function changeLanguage() {
+            currentLang = document.getElementById('langSelect').value;
+            let t = langData[currentLang] || langData['am'];
+            
+            document.getElementById('nav-auth').innerText = currentUser ? `👤 ${currentUser.name}` : t.navAuth;
+            document.getElementById('nav-post').innerText = t.navPost;
+            document.getElementById('nav-admin').innerText = t.navAdmin;
+            document.getElementById('hero-title').innerText = t.heroTitle;
+            document.getElementById('hero-subtitle').innerText = t.heroSubtitle;
+            document.getElementById('sec-title').innerText = t.secTitle;
+            
+            document.getElementById('opt-all').innerText = t.all;
+            document.getElementById('opt-goods').innerText = t.goods;
+            document.getElementById('opt-re').innerText = t.re;
+            document.getElementById('opt-cars').innerText = t.cars;
+            document.getElementById('opt-mach').innerText = t.mach;
+
+            document.getElementById('cat-all-bar').innerText = t.all;
+            document.getElementById('cat-goods-bar').innerText = t.goods;
+            document.getElementById('cat-re-bar').innerText = t.re;
+            document.getElementById('cat-cars-bar').innerText = t.cars;
+            document.getElementById('cat-mach-bar').innerText = t.mach;
+
+            document.getElementById('m-login-title').innerText = t.loginTitle;
+            document.getElementById('lbl-log-email').innerText = t.logEmailLbl;
+            document.getElementById('lbl-log-pass').innerText = t.logPassLbl;
+            document.getElementById('btn-login').innerText = t.btnLogin;
+            document.getElementById('txt-no-acc').innerHTML = t.noAccTxt;
+
+            document.getElementById('m-signup-title').innerText = t.signupTitle;
+            document.getElementById('lbl-reg-name').innerText = t.regNameLbl;
+            document.getElementById('lbl-reg-email').innerText = t.regEmailLbl;
+            document.getElementById('lbl-reg-pass').innerText = t.regPassLbl;
+            document.getElementById('lbl-reg-phone').innerText = t.regPhoneLbl;
+            document.getElementById('lbl-reg-tg').innerText = t.regTgLbl;
+            document.getElementById('btn-signup').innerText = t.btnSignup;
+            document.getElementById('txt-has-acc').innerHTML = t.hasAccTxt;
+
+            document.getElementById('m-verify-title').innerText = t.verifyTitle;
+            document.getElementById('lbl-v-code').innerText = t.verifyCodeLbl;
+            document.getElementById('btn-verify').innerText = t.btnVerify;
+
+            document.getElementById('m-post-title').innerText = t.postTitle;
+            document.getElementById('lbl-pcat').innerText = t.pCat;
+            document.getElementById('lbl-ptitle').innerText = t.pName;
+            document.getElementById('lbl-pprice').innerText = t.pPrice;
+            document.getElementById('lbl-pimg').innerText = t.pImg;
+            document.getElementById('lbl-pdesc').innerText = t.pDesc;
+            document.getElementById('btn-post-sub').innerText = t.postBtn;
+            document.getElementById('footer-text').innerText = t.footer;
+
+            renderProducts();
+        }
+
+        function changeCurrency() {
+            currentCurrency = document.getElementById('currencySelect').value;
+            renderProducts();
+        }
+
+        function openModal(id) { document.getElementById(id).style.display = 'flex'; }
+        function closeModal(id) { document.getElementById(id).style.display = 'none'; }
+
+        function switchAuthView(view) {
+            document.getElementById('loginView').style.display = view === 'login' ? 'block' : 'none';
+            document.getElementById('signupView').style.display = view === 'signup' ? 'block' : 'none';
+            document.getElementById('verifyView').style.display = view === 'verify' ? 'block' : 'none';
+        }
+
+        function handleSignup() {
+            let name = document.getElementById('regName').value.trim();
+            let email = document.getElementById('regEmail').value.trim();
+            let pass = document.getElementById('regPass').value.trim();
+            let phone = document.getElementById('regPhone').value.trim();
+            let telegram = document.getElementById('regTelegram').value.trim();
+
+            if(!name || !email || !pass || !phone || !telegram) {
+                alert('Please fill in all fields! / ሁሉንም መስኮች ይሙሉ!');
+                return;
+            }
+            tempSignupData = { name, email, pass, phone, telegram };
+            switchAuthView('verify');
+            alert('Verification Code Sent! (Demo Code: 1234)');
+        }
+
+        function handleVerification() {
+            let enteredCode = document.getElementById('verifyCode').value.trim();
+            if(enteredCode === '1234') {
+                let users = JSON.parse(localStorage.getItem('iftu_users')) || [];
+                users.push(tempSignupData);
+                localStorage.setItem('iftu_users', JSON.stringify(users));
+                currentUser = tempSignupData;
+                localStorage.setItem('iftu_current_user', JSON.stringify(currentUser));
+                alert('Verified & Logged In! / ተረጋግጧል!');
+                closeModal('authModal');
+                document.getElementById('nav-auth').innerText = `👤 ${currentUser.name}`;
+            } else {
+                alert('Invalid Code! Enter 1234');
+            }
+        }
+
+        function handleLogin() {
+            let email = document.getElementById('logEmail').value.trim();
+            let pass = document.getElementById('logPass').value.trim();
+            let users = JSON.parse(localStorage.getItem('iftu_users')) || [];
+            let found = users.find(u => u.email === email && u.pass === pass);
+
+            if(found) {
+                currentUser = found;
+                localStorage.setItem('iftu_current_user', JSON.stringify(currentUser));
+                alert(`Welcome, ${currentUser.name}!`);
+                closeModal('authModal');
+                document.getElementById('nav-auth').innerText = `👤 ${currentUser.name}`;
+            } else {
+                alert('Incorrect email or password! / ኢሜይል ወይም የሚስጥር ቃል ስህተት ነው!');
+            }
+        }
+
+        function checkAuthAndPost() {
+            if(!currentUser) {
+                alert('Please Sign In or Sign Up first! / መጀመሪያ ይመዝገቡ ወይም ይግቡ!');
+                openModal('authModal');
+                switchAuthView('login');
+            } else {
+                openModal('postModal');
+            }
+        }
+
+        function submitProduct() {
+            let category = document.getElementById('pCategory').value;
+            let title = document.getElementById('pTitle').value.trim();
+            let price = parseFloat(document.getElementById('pPrice').value);
+            let desc = document.getElementById('pDesc').value.trim();
+            let fileInput = document.getElementById('pImgFile');
+            let telegram = currentUser ? currentUser.telegram : 'iftuhairoil';
+
+            if(!title || isNaN(price)) {
+                alert('Please enter product title and price! / የዕቃውን ስም እና ዋጋ ያስገቡ!');
+                return;
+            }
+
+            if (fileInput.files && fileInput.files[0]) {
+                let reader = new FileReader();
+                reader.onload = function(e) {
+                    saveNewProduct(category, title, price, e.target.result, desc, telegram);
+                };
+                reader.readAsDataURL(fileInput.files[0]);
+            } else {
+                saveNewProduct(category, title, price, defaultImg, desc, telegram);
+            }
+        }
+
+        function saveNewProduct(category, title, price, imgData, desc, telegram) {
+            let newP = { id: Date.now(), category, title, price, currency: currentCurrency, img: imgData, desc, telegram, featured: false };
+            pendingProducts.push(newP);
+            try {
+                localStorage.setItem('iftu_global_pending', JSON.stringify(pendingProducts));
+                alert('Sent to Admin for Approval! / ማስታወቂያዎ ለአስተዳዳሪው ተልኳል!');
+                closeModal('postModal');
+            } catch (err) {
+                alert('Image file is too large! Please choose a smaller image.');
+            }
+        }
+
+        function checkAdmin() {
+            let pass = document.getElementById('adminPass').value;
+            if(pass === 'Fike@iftu&2026') {
+                document.getElementById('adminLoginBox').style.display = 'none';
+                document.getElementById('adminPanelBox').style.display = 'block';
+                renderPending();
+            } else {
+                alert('Wrong Password!');
+            }
+        }
+
+        function renderPending() {
+            let list = document.getElementById('pendingList');
+            list.innerHTML = '';
+            if(pendingProducts.length === 0) {
+                list.innerHTML = '<p>No pending ads.</p>';
+                return;
+            }
+            pendingProducts.forEach((p, index) => {
+                list.innerHTML += `
+                    <div style="background:#F8FAFC; padding:10px; margin-bottom:10px; border-radius:5px; border:1px solid #CBD5E1;">
+                        <strong>[${p.category.toUpperCase()}] ${p.title}</strong> - ${p.price} ${p.currency}<br>
+                        <small>Telegram: @${p.telegram}</small><br>
+                        <button type="button" class="search-btn" style="padding:6px 12px; margin-top:5px; font-size:0.8rem; border-radius:4px;" onclick="approveProduct(${index})">Approve</button>
+                        <button type="button" class="search-btn" style="padding:6px 12px; margin-top:5px; font-size:0.8rem; background:#DC2626; color:white; border-radius:4px;" onclick="featureProduct(${index})">Featured (Top)</button>
+                    </div>
+                `;
+            });
+        }
+
+        function approveProduct(index) {
+            let item = pendingProducts.splice(index, 1)[0];
+            item.featured = false;
+            products.unshift(item);
+            saveStorageAndRender();
+            renderPending();
+            alert('Approved!');
+        }
+
+        function featureProduct(index) {
+            let item = pendingProducts.splice(index, 1)[0];
+            item.featured = true;
+            products.unshift(item);
+            saveStorageAndRender();
+            renderPending();
+            alert('Approved & Featured!');
+        }
+
+        function saveStorageAndRender() {
+            localStorage.setItem('iftu_global_products', JSON.stringify(products));
+            localStorage.setItem('iftu_global_pending', JSON.stringify(pendingProducts));
+            renderProducts();
+        }
+
+        function setCategory(cat, element) {
+            activeCategoryFilter = cat;
+            document.querySelectorAll('.cat-chip').forEach(c => c.classList.remove('active'));
+            if(element) element.classList.add('active');
+            document.getElementById('searchCategory').value = cat;
+            renderProducts();
+        }
+
+        function syncCategoryDropdown() {
+            let cat = document.getElementById('searchCategory').value;
+            let chip = document.querySelector(`.cat-chip[data-cat="${cat}"]`);
+            setCategory(cat, chip);
+        }
+
+        function resetHome() {
+            document.getElementById('searchInput').value = '';
+            let chip = document.querySelector('.cat-chip[data-cat="all"]');
+            setCategory('all', chip);
+        }
+
+        function convertPrice(price, fromCurr, toCurr) {
+            if(fromCurr === toCurr) return price;
+            let rates = { USD: 1, AED: 3.67, ETB: 120 };
+            let priceInUSD = price / (rates[fromCurr] || 1);
+            return Math.round(priceInUSD * (rates[toCurr] || 1));
+        }
+
+        function renderProducts() {
+            let searchQuery = document.getElementById('searchInput').value.toLowerCase();
+            let grid = document.getElementById('productsGrid');
+            grid.innerHTML = '';
+            
+            let sorted = [...products].sort((a, b) => (b.featured === true) - (a.featured === true));
+            let filtered = sorted.filter(p => {
+                let matchesCat = (activeCategoryFilter === 'all' || p.category === activeCategoryFilter);
+                let matchesSearch = p.title.toLowerCase().includes(searchQuery) || p.desc.toLowerCase().includes(searchQuery);
+                return matchesCat && matchesSearch;
+            });
+
+            let t = langData[currentLang] || langData['am'];
+
+            filtered.forEach(p => {
+                let cleanTg = (p.telegram || 'iftuhairoil').replace('@', '');
+                let catLabel = p.category.toUpperCase();
+                let itemCurr = p.currency || 'ETB';
+                let convertedVal = convertPrice(p.price, itemCurr, currentCurrency);
+                let formattedPrice = convertedVal.toLocaleString() + (currencySymbols[currentCurrency] || ' ETB');
+
+                grid.innerHTML += `
+                    <div class="product-card ${p.featured ? 'featured' : ''}">
+                        ${p.featured ? '<div class="featured-badge">⭐ FEATURED</div>' : ''}
+                        <div class="category-tag">${catLabel}</div>
+                        <img src="${p.img || defaultImg}" class="product-img" alt="Product">
+                        <div class="product-info">
+                            <div class="product-title">${p.title}</div>
+                            <div class="product-price">${formattedPrice}</div>
+                            <div class="product-desc">${p.desc}</div>
+                            <a href="https://t.me/${cleanTg}" target="_blank" class="telegram-btn">${t.tgBtn}</a>
+                        </div>
+                    </div>
+                `;
+            });
+        }
+
+        function filterListings() {
+            renderProducts();
+        }
+
+        window.onload = function() {
+            if(currentUser) {
+                document.getElementById('nav-auth').innerText = `👤 ${currentUser.name}`;
+            }
+            changeLanguage();
+        };
+    </script>
+</body>
+</html>
